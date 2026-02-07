@@ -1,137 +1,226 @@
-# System Design — Subsystems
+# System Design — Subsystems (Phase 1)
 
-This document outlines the Bonsai Bio-Cyber System subsystems as defined for Phase 1. Each subsystem includes its purpose, components (requirement-level), and learning objectives. All designs adhere to Phase 1 governance rules: observation and learning only, no optimization, no final hardware decisions.
+This document defines the **Phase 1 subsystems** of the Bonsai Bio-Cyber System.
+Each subsystem includes its **purpose**, **Phase 1 scope**, **requirement-level components**, and **explicit learning objectives**.
+
+All content adheres to **Canonical Governance Rules**:
+- Observation and learning only
+- No optimization
+- No final hardware decisions
+- Requirement-level planning only
 
 ---
 
-## 1. Sensor Subsystem
+## 1. Environment Subsystem
 
-**Purpose:** Capture environmental variables critical to bonsai seed growth and early development.
+**Purpose:**  
+Represent the physical and biological conditions affecting bonsai growth that are observable and measurable.
 
 **Phase 1 Scope:**
-- Temperature (air and optional soil/root)
-- Humidity
+- Temperature (ambient air)
+- Humidity (ambient)
 - Light intensity
 - Soil moisture
-- Watering events (manual or sensor-based)
-- Optional: CO₂ or air quality sensors
+- Watering events (manual observation)
+
+**Components (Conceptual):**
+- Physical growing environment
+- Pots, soil, ambient air, light source
+- Human interaction (watering, inspection)
+
+**Learning Objectives:**
+- Understand which environmental variables influence early bonsai growth
+- Learn to translate biological conditions into measurable signals
+- Develop intuition for environmental variability across multiple plants
+
+**Phase 1 Limitations:**
+- No environmental control or optimization
+- No automated intervention
+- Observation only
+
+---
+
+## 2. Plant / Biological Subsystem
+
+**Purpose:**  
+Provide the living biological system being observed and measured.
+
+**Phase 1 Scope:**
+- Germination and early growth of 5 bonsai plants
+- Manual care (watering, positioning)
+- Visual and qualitative observations
+
+**Components (Requirement-Level):**
+- Bonsai seeds (species TBD)
+- Individual pots and soil medium
+- Manual observation notes
+
+**Learning Objectives:**
+- Learn species-specific germination characteristics
+- Understand early plant response to environmental conditions
+- Practice structured biological observation and documentation
+
+**Phase 1 Limitations:**
+- No pruning, shaping, or growth manipulation
+- No experimental stress induction
+- Baseline growth only
+
+---
+
+## 3. Sensor Subsystem
+
+**Purpose:**  
+Convert environmental variables into measurable electrical signals.
+
+**Phase 1 Scope:**
+- Temperature sensors (analog or I²C)
+- Humidity sensors (I²C)
+- Light sensors (analog)
+- Soil moisture sensors (analog)
+- Watering event inputs (digital/manual)
 
 **Components (Requirement-Level):**
 - Arduino-compatible sensors
-- Analog or digital interface per variable
-- One sensor per plant per variable (except optional shared variables)
+- Analog, digital, and I²C interfaces
+- One sensor per plant per variable (except shared buses)
 
 **Learning Objectives:**
-- Understand which environmental variables affect bonsai growth
-- Learn about sensor types, analog vs digital/I²C connections
-- Practice sensor placement and calibration for accurate readings
-- Learn to document sensor data consistently
+- Understand analog vs digital vs I²C sensors
+- Learn sensor placement and calibration principles
+- Practice multi-sensor system planning
+- Learn limitations imposed by sensor quantity and interfaces
 
-**Notes / Phase 1 Limitations:**
-- Total number of sensors per plant must be planned to fit board capabilities
-- No hardware purchase decisions made yet; focus on requirements and quantity
-
----
-
-## 2. Data Logging Subsystem
-
-**Purpose:** Collect and store environmental measurements and observations for analysis and Phase 1 learning.
-
-**Phase 1 Scope:**
-- Simple logging of sensor readings per plant
-- Manual logging of watering events (optional automatic logging)
-- Storage in CSV or Markdown files
-
-**Components (Requirement-Level):**
-- Arduino or microcontroller (requirements-level planning only)
-- Local storage (SD card, USB, or PC connection)
-- File naming conventions to separate plant data and variable type
-
-**Learning Objectives:**
-- Learn methods for structured data collection
-- Understand data organization for reproducibility
-- Explore options for sensor-to-file mapping without committing to hardware
-
-**Notes / Phase 1 Limitations:**
-- Continuous logging is optional; focus is on capturing meaningful, periodic data
-- No automation of data upload or cloud storage in Phase 1
-
----
-
-## 3. Power Subsystem
-
-**Purpose:** Provide stable power for sensors and microcontroller during Phase 1 monitoring.
-
-**Phase 1 Scope:**
-- Power supply sufficient for sensors and logging microcontroller
-- No advanced power management or optimization required
-
-**Components (Requirement-Level):**
-- Placeholder for Arduino-compatible power source (battery, adapter)
-- Wires and connectors for sensor power
-
-**Learning Objectives:**
-- Understand basic power requirements for simple DIY sensor systems
-- Learn the concept of safe power supply for multiple small electronics
-- Practice documenting requirements before hardware selection
-
-**Notes / Phase 1 Limitations:**
-- No final selection of power solution; focus on estimating capacity needed
-- No automation of power monitoring
+**Phase 1 Limitations:**
+- No sensor model selection finalization
+- No performance optimization
+- No redundancy or fault tolerance design
 
 ---
 
 ## 4. Communication / Bus Subsystem
 
-**Purpose:** Connect sensors to the microcontroller and organize input/output for data collection.
+**Purpose:**  
+Define how sensor data is transmitted to the microcontroller.
 
 **Phase 1 Scope:**
-- Map sensor variables to microcontroller inputs (analog/digital/I²C)
-- Identify shared bus options (I²C) for multiple sensors
-- Track total pin and input requirements
+- Analog input mapping
+- Digital input mapping
+- I²C bus sharing and addressing
+- Conceptual pin allocation planning
 
 **Components (Requirement-Level):**
-- Arduino Uno or equivalent microcontroller (requirements-level only)
+- Analog input channels
+- Digital input channels
+- I²C bus (SDA/SCL)
 - Sensor-to-pin mapping table
-- Conceptual wiring diagram (for reference)
+- Conceptual wiring diagram (Mermaid)
 
 **Learning Objectives:**
-- Understand digital and analog I/O requirements
-- Learn bus-sharing concepts (I²C) and address limitations
-- Practice planning sensor layout without making final hardware decisions
+- Understand microcontroller I/O constraints
+- Learn I²C bus sharing concepts
+- Practice planning under pin-count limitations
+- Understand why architectural planning precedes hardware selection
 
-**Notes / Phase 1 Limitations:**
-- Focus on requirement-level planning for 5 plants
-- Wiring diagrams are conceptual; actual connections will be verified in Phase 2
+**Phase 1 Limitations:**
+- Pin assignments are conceptual
+- Wiring diagrams are non-binding
+- Final board selection deferred to Phase 2
 
 ---
 
-## 5. Plant / Biological Subsystem
+## 5. Microcontroller Subsystem
 
-**Purpose:** Provide the living system that the sensors monitor — bonsai seeds and early seedlings.
+**Purpose:**  
+Central node for data acquisition and coordination.
 
 **Phase 1 Scope:**
-- Plant 5 bonsai seeds in separate containers
-- Monitor growth and environmental conditions
-- Record watering and other observable variables
+- Read sensor inputs
+- Perform minimal signal handling
+- Forward data to logging subsystem
 
 **Components (Requirement-Level):**
-- Bonsai seeds (species TBD)
-- Pots and soil medium
-- Manual logging tools for growth observations
+- Arduino or compatible microcontroller
+- GPIO, analog inputs, I²C interface
 
 **Learning Objectives:**
-- Learn species-specific germination requirements
-- Understand the impact of environmental variables on early growth
-- Practice structured observation and documentation
+- Understand microcontroller role in cyber-physical systems
+- Learn sensor polling concepts
+- Learn how subsystems integrate logically
 
-**Notes / Phase 1 Limitations:**
-- No interventions beyond basic care
-- Focus on establishing baseline observations for later phases
+**Phase 1 Limitations:**
+- No control logic
+- No actuation
+- No optimization or scheduling complexity
 
 ---
 
-## Notes
+## 6. Data Logging Subsystem
 
-- All subsystems should be cross-referenced with **sensor inventory tables**, **phase 1 roadmap**, and **canonical governance rules**.
-- Emphasis is on **observation, learning, and documentation**, not on optimization, automation, or hardware finalization.
+**Purpose:**  
+Persist observational data for analysis and learning.
+
+**Phase 1 Scope:**
+- Log sensor readings per plant
+- Log watering events
+- Use local, human-readable storage
+
+**Components (Requirement-Level):**
+- CSV or Markdown files
+- Timestamping
+- Plant and sensor identifiers
+- Directory-based organization
+
+**Learning Objectives:**
+- Learn structured data collection
+- Understand traceability and reproducibility
+- Practice separating raw data from interpretation
+
+**Phase 1 Limitations:**
+- No cloud storage
+- No automated data pipelines
+- No analytics or visualization requirements
+
+---
+
+## 7. Power Subsystem
+
+**Purpose:**  
+Provide safe and sufficient power to sensors and microcontroller.
+
+**Phase 1 Scope:**
+- Powering sensors and microcontroller only
+- Stable, low-risk operation
+
+**Components (Requirement-Level):**
+- Low-voltage power source (USB, adapter, or battery)
+- Wiring and connectors
+
+**Learning Objectives:**
+- Understand basic power requirements
+- Learn why power planning matters even in small systems
+- Practice documenting power assumptions without committing to solutions
+
+**Phase 1 Limitations:**
+- No power optimization
+- No battery management systems
+- No monitoring or redundancy
+
+---
+
+## 8. Subsystem Integration Notes
+
+- Subsystems are **modular and loosely coupled**
+- No subsystem may control another in Phase 1
+- All interactions are **observational and unidirectional**
+- Diagrams and tables define conceptual relationships only
+
+**Primary Phase 1 Learning Objective:**
+Develop a complete mental model of a bio-cyber system **before** introducing automation, optimization, or control.
+
+---
+
+## References
+
+- Canonical Governance Rules: `docs/governance/canonical_governance.md`
+- Sensor Tables & Diagrams: `docs/system_design/diagrams/sensor_mapping_and_diagrams.md`
+- Phase 1 Roadmap: `docs/roadmap/phased_plan.md`
